@@ -1,4 +1,6 @@
 """
+Download and organize the ADE20K dataset on a folder called "data".
+
 Copyright (c), Aarón Espasandín - All Rights Reserved
 
 This source code is licensed under the BSD 3-Clause license found in the
