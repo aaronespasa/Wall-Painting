@@ -1,10 +1,11 @@
 <div id="top"></div>
 <!-- PROJECT SHIELDS -->
 <!-- The reference variables can be found at the end of this README file -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Stars][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+
+[![GitHub contributors](https://img.shields.io/github/contributors/aaronespasa/Wall-Painting.svg?style=for-the-badge)](https://github.com/aaronespasa/Wall-Painting/graphs/contributors/)
+[![Stars](https://img.shields.io/github/stars/aaronespasa/Wall-Painting.svg?style=for-the-badge)](https://github.com/aaronespasa/Wall-Painting/stargazers/)
+[![Issues](https://img.shields.io/github/issues/aaronespasa/Wall-Painting.svg?style=for-the-badge)](https://github.com/aaronespasa/Wall-Painting/issues/)
+[![BSD-3 Clause License](https://img.shields.io/github/license/aaronespasa/Wall-Painting.svg?style=for-the-badge)](https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE/)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -151,16 +152,3 @@ Aarón Espasandín - [@aaronespasa](https://twitter.com/aaronespasa)
 Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
 * [Best README Template](https://github.com/othneildrew/Best-README-Template)
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/aaronespasa/Wall-Painting.svg?style=for-the-badge
-[contributors-url]: https://github.com/aaronespasa/Wall-Painting/graphs/contributors
-[stars-shield]: https://img.shields.io/github/stars/aaronespasa/Wall-Painting.svg?style=for-the-badge
-[stars-url]: https://github.com/aaronespasa/Wall-Painting/stargazers
-[issues-shield]: https://img.shields.io/github/issues/aaronespasa/Wall-Painting.svg?style=for-the-badge
-[issues-url]: https://github.com/aaronespasa/Wall-Painting/issues
-[license-shield]: https://img.shields.io/github/license/aaronespasa/Wall-Painting.svg?style=for-the-badge
-[license-url]: https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE
