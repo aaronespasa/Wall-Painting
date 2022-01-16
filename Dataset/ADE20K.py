@@ -7,11 +7,11 @@ This source code is licensed under the BSD 3-Clause license found in the
 LICENSE file in the root directory of this source tree:
 https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE
 """
-import constants
 import os
 import json
 from urllib.request import urlretrieve
 from zipfile import ZipFile
+import constants
 
 class ADE20K:
     """
@@ -19,9 +19,9 @@ class ADE20K:
     Downloads the dataset and creates the necessary files for this dataset.
     """
     def __init__(self):
-        self.DATA_FOLDER_NAME = "data"
-        self.TRAINING_ODGT_PATH = os.path.join(self.DATA_FOLDER_NAME, "training.odgt")
-        self.VALIDATION_ODGT_PATH = os.path.join(self.DATA_FOLDER_NAME, "validation.odgt")
+        self.DATA_FOLDER_NAME = constants.DATA_FOLDER_NAME
+        self.TRAINING_ODGT_PATH = constants.TRAINING_ODGT_PATH
+        self.VALIDATION_ODGT_PATH = constants.VALIDATION_ODGT_PATH
 
         # Create the data folder, download the ADE20K dataset and download the ODGT files
         self.create_folders()
@@ -29,7 +29,7 @@ class ADE20K:
         self.train_samples = [json.loads(x.rstrip()) for x in open(self.TRAINING_ODGT_PATH, 'r')]
         self.val_samples = [json.loads(x.rstrip()) for x in open(self.VALIDATION_ODGT_PATH, 'r')]
 
-        self.SCENE_CATEGORIES_PATH = os.path.join(self.DATA_FOLDER_NAME, "ADEChallengeData2016", "sceneCategories.txt")
+        self.SCENE_CATEGORIES_PATH = constants.SCENE_CATEGORIES_PATH
         self.SCENE_DICT = self.build_scene_dict()
 
     def build_scene_dict(self):
@@ -40,8 +40,6 @@ class ADE20K:
         """
         if os.path.isfile(self.SCENE_CATEGORIES_PATH):
             scene_dict = {}
-            val_count = 0
-            train_count = 0
 
             with open(self.SCENE_CATEGORIES_PATH, 'r') as scene_file:
                 for line in scene_file:
