@@ -1,6 +1,5 @@
 """
 Download and organize the ADE20K dataset on a folder called "data".
-Then, create a dataset to be feed into the PyTorch training file.
 
 Copyright (c), Aarón Espasandín - All Rights Reserved
 
