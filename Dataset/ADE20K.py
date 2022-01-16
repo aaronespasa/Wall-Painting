@@ -8,17 +8,10 @@ This source code is licensed under the BSD 3-Clause license found in the
 LICENSE file in the root directory of this source tree:
 https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE
 """
-from glob import glob
 import os
 import json
 from urllib.request import urlretrieve
 from zipfile import ZipFile
-
-from PIL import Image
-import cv2
-
-import matplotlib.pyplot as plt
-import numpy as np
 
 class ADE20K:
     """
