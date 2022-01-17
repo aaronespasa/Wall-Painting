@@ -9,9 +9,12 @@ https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE
 """
 import os
 import json
+import progressbar
 from urllib.request import urlretrieve
 from zipfile import ZipFile
 import constants
+
+pbar = None
 
 class ADE20K:
     """
@@ -82,11 +85,11 @@ class ADE20K:
             test_url = "http://data.csail.mit.edu/places/ADEchallenge/release_test.zip"
 
             print("Downloading training and validation data...")
-            urlretrieve(url=train_val_url, filename=train_val_file_name)
+            urlretrieve(train_val_url, train_val_file_name, self.show_progress)
             print("Downloaded succesfully!")
 
             print("Downloading testing data...")
-            urlretrieve(url=test_url, filename=test_file_name)
+            urlretrieve(test_url, test_file_name, self.show_progress)
             print("Downloaded succesfully!")
 
             print(f"Extracting the content of both zips on the {self.DATA_FOLDER_NAME} folder...")
@@ -121,7 +124,7 @@ class ADE20K:
             print(f"The file training.odgt already exists!")
         else:
             TRAINING_ODGT_URL = "https://raw.githubusercontent.com/CSAILVision/semantic-segmentation-pytorch/master/data/training.odgt"
-            urlretrieve(url=TRAINING_ODGT_URL, filename=self.TRAINING_ODGT_PATH)
+            urlretrieve(TRAINING_ODGT_URL, self.TRAINING_ODGT_PATH, self.show_progress)
             print(f"The file training.odgt has been downloaded succesfully!")
 
         # validation.odgt
@@ -129,8 +132,22 @@ class ADE20K:
             print(f"The file validation.odgt already exists!")
         else:
             VALIDATION_ODGT_URL = "https://raw.githubusercontent.com/CSAILVision/semantic-segmentation-pytorch/master/data/validation.odgt"
-            urlretrieve(url=VALIDATION_ODGT_URL, filename=self.VALIDATION_ODGT_PATH)
+            urlretrieve(VALIDATION_ODGT_URL, self.VALIDATION_ODGT_PATH, self.show_progress)
             print(f"The file validation.odgt has been downloaded succesfully!")
+
+    def show_progress(self, block_num, block_size, total_size):
+        global pbar
+        if pbar is None:
+            pbar = progressbar.ProgressBar(maxval=total_size)
+            pbar.start()
+
+        downloaded = block_num * block_size
+        if downloaded < total_size:
+            pbar.update(downloaded)
+        else:
+            pbar.finish()
+            pbar = None
+
 
     ##########################################################
     ##########################################################
@@ -139,3 +156,7 @@ class ADE20K:
         self.create_data_folder()
         self.download_ade20k_dataset()
         self.download_odgts()
+
+if __name__ == '__main__':
+    dataset = ADE20K()
+    dataset.create_folders()
