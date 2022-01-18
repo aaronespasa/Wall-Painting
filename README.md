@@ -127,7 +127,7 @@ See the [open issues](https://github.com/aaronespasa/Wall-Painting/issues) for a
 If you have a suggestion that would make this better, please fork the repo and create a pull request. Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b AmazingFeature`)
+2. Create your Feature Branch (`git checkout -b WallFeature`)
 3. Commit your Changes (`git commit -m 'Add some cool feature'`)
 4. Push to the Branch (`git push origin AmazingFeature`)
 5. Open a Pull Request
