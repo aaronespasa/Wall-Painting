@@ -10,6 +10,7 @@ https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE
 import os
 import json
 from PIL import Image
+import cv2
 from torch.utils.data import Dataset
 import numpy as np
 import constants
@@ -58,6 +59,32 @@ class WallDataset(Dataset):
     
     def __len__(self):
         return self.length
+
+    def read_image(self, img_path: str):
+        """Resizes and normalizes an image located at img_path"""
+        x = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        x = cv2.cvtColor(x, cv2.COLOR_BGR2RGB)
+        x = cv2.resize(x, (self.SHAPE[0], self.SHAPE[1]))
+        x = x / 255.0
+        x = x.astype(np.float32)
+        return x
+
+
+    def read_mask(self, mask_path: str):
+        """Convert a mask into grayscale, resizes it and normalizes it"""
+        x = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        x = cv2.resize(x, (self.SHAPE[0], self.SHAPE[1]))
+
+        x = np.array(x, dtype=np.int16) - 1
+        x[x > 0] = 1
+
+        x = x / 255.0
+        # Images have dimensions (self.SHAPE[0], self.SHAPE[1], 3).
+        # However, masks have dimensions (self.SHAPE[0], self.SHAPE[1]).
+        # Thus, we need to add a dimensions so they have the following shape: self.SHAPE[0], self.SHAPE[1], 1).
+        x = np.expand_dims(x, axis=-1)  # axis 2 = axis -1 = last dimension
+        x = x.astype(np.float32)
+        return x
     
     def __getitem__(self, idx):
         """To be implemented..."""
