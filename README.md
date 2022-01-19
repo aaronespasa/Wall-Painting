@@ -129,7 +129,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b WallFeature`)
 3. Commit your Changes (`git commit -m 'Add some cool feature'`)
-4. Push to the Branch (`git push origin AmazingFeature`)
+4. Push to the Branch (`git push origin WallFeature`)
 5. Open a Pull Request
 
 
