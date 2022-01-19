@@ -86,6 +86,29 @@ class WallDataset(Dataset):
         x = x.astype(np.float32)
         return x
     
+    def preprocess(self, x, y):
+        """Apply read_image and read_mask to have the image and annotations for the TF Dataset"""
+        def f(x, y):
+            # Paths have the following format b"path". We want to convert them
+            # so they have the normal string format "".
+            x = x.decode()
+            y = y.decode()
+
+            x = self.read_image(x)
+            y = self.read_mask(y)
+
+            x = x.long()
+            y = y.long()
+
+            return x, y
+
+        
+        image, mask = map(f, [x, y])
+        image.reshape([self.SHAPE[0], self.SHAPE[1], 3])
+        mask.reshape([self.SHAPE[0], self.SHAPE[1], 1])
+
+        return image, mask
+    
     def __getitem__(self, idx):
         """To be implemented..."""
         ...
