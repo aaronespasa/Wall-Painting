@@ -17,9 +17,10 @@ import constants
 
 class WallDataset(Dataset):
     def __init__(self, transform=None):
+        self.transform = transform
         self.train_samples = [json.loads(x.rstrip()) for x in open(constants.TRAINING_ODGT_PATH, 'r')]
         self.val_samples = [json.loads(x.rstrip()) for x in open(constants.VALIDATION_ODGT_PATH, 'r')]
-        
+
         (self.train_images, self.train_masks, self.val_images, self.val_masks) = self.load_data()
 
         self.train_length = 0
@@ -87,8 +88,8 @@ class WallDataset(Dataset):
         x = x.astype(np.float32)
         return x
     
-    def preprocess(self, x, y):
-        """Apply read_image and read_mask to have the image and annotations for the TF Dataset"""
+    def preprocess(self, x:str, y:str):
+        """Preprocess the input image and mask"""
         def f(x, y):
             # Paths have the following format b"path". We want to convert them
             # so they have the normal string format "".
@@ -111,5 +112,13 @@ class WallDataset(Dataset):
         return image, mask
     
     def __getitem__(self, idx):
-        """To be implemented..."""
-        ...
+        img_path = self.train_images[idx] if idx < self.val_length else self.val_images[idx]
+        mask_path = self.train_masks[idx] if idx < self.val_length else self.val_masks[idx]
+
+        image, mask = self.preproces(img_path, mask_path)
+
+        if self.transform is not None:
+            augmentations = self.transform(img=image, mask=mask)
+            image, mask = augmentations["img"], augmentations["mask"]
+
+        return image, mask
