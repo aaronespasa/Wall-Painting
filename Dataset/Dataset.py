@@ -22,7 +22,8 @@ class WallDataset(Dataset):
         
         (self.train_images, self.train_masks, self.val_images, self.val_masks) = self.load_data()
 
-        self.length = 0
+        self.train_length = 0
+        self.val_length = 0
 
     def load_data(self):
         """Returns two lists containing the sorted paths to all images and masks.
@@ -43,7 +44,7 @@ class WallDataset(Dataset):
             if self.SCENE_DICT[image_name] in self.SCENES_LIST:
                 train_images.append(os.path.join("data", sample['fpath_img']))
                 train_masks.append(os.path.join("data", sample['fpath_segm']))
-                self.length += 1
+                self.train_length += 1
 
         for sample in self.val_samples:
             # ADEChallengeData2016/images/validation/ADE_val_00000006.jpg -> ADE_val_00000006
@@ -53,12 +54,12 @@ class WallDataset(Dataset):
             if self.SCENE_DICT[image_name] in self.SCENES_LIST:
                 val_images.append(os.path.join("data", sample['fpath_img']))
                 val_masks.append(os.path.join("data", sample['fpath_segm']))
-                self.length += 1
+                self.val_length += 1
 
         return train_images, train_masks, val_images, val_masks
     
     def __len__(self):
-        return self.length
+        return self.train_length + self.val_length
 
     def read_image(self, img_path: str):
         """Resizes and normalizes an image located at img_path"""
