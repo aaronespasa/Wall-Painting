@@ -17,6 +17,8 @@ SCENE_CATEGORIES_PATH = os.path.join(DATA_FOLDER_NAME,
                                     "ADEChallengeData2016",
                                     "sceneCategories.txt")
 
+# SCENES_LIST is a list with all the scenes of the ADE20K
+# that can contain a wall
 SCENES_LIST = ['bathroom', 'bedroom', 'kitchen', 'living_room',
                'art_gallery', 'art_studio', 'attic', 'auditorium',
                 'shop', 'ballroom', 'bank_indoor', 'banquet_hall',

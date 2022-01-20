@@ -26,36 +26,38 @@ class WallDataset(Dataset):
         self.train_length = 0
         self.val_length = 0
 
-    def load_data(self):
-        """Returns two lists containing the sorted paths to all images and masks.
+    def load_samples_with_walls(self, images:list, masks:list, purpose:str):
+        """Loads on the images & masks lists all those samples containing walls.
         
-        It just returns those images which contain walls."""
+        The purpose argument tells us if we're creating the dataset for "TRAINING"
+        or "VALIDATION" purposes."""
+        samples = self.train_samples if purpose == "TRAINING" else self.val_samples
+        length = 0
+
+        for sample in samples:
+            # ADEChallengeData2016/images/<purpose>/ADE_train_00000001.jpg -> ADE_train_00000001
+            image_name = sample["fpath_img"].split("/")[-1][:-4]
+
+            # Only append the image if it contains a wall on it
+            if self.SCENE_DICT[image_name] in self.SCENES_LIST:
+                images.append(os.path.join(constants.DATA_FOLDER_NAME, sample['fpath_img']))
+                masks.append(os.path.join(constants.DATA_FOLDER_NAME, sample["fpath_segm"]))
+                length += 1
+
+        if purpose == "TRAINING":
+            self.train_length = length
+        else:
+            self.val_length = length
+
+
+    def load_data(self):
+        """Returns two lists containing the sorted paths to all images and masks containing walls."""
         # Loop through each image, check what scene it has and, if that scene is in the
         # scenes_list, add it to the list images and masks
-        train_images = []
-        train_masks = []
-        val_images = []
-        val_masks = []
+        train_images, train_masks, val_images, val_masks = [], [], [], []
 
-        for sample in self.train_samples:
-            # ADEChallengeData2016/images/training/ADE_train_00000001.jpg -> ADE_train_00000001
-            image_name = sample['fpath_img'][37:55]
-
-            # Only append the image if it contains a wall in it
-            if self.SCENE_DICT[image_name] in self.SCENES_LIST:
-                train_images.append(os.path.join("data", sample['fpath_img']))
-                train_masks.append(os.path.join("data", sample['fpath_segm']))
-                self.train_length += 1
-
-        for sample in self.val_samples:
-            # ADEChallengeData2016/images/validation/ADE_val_00000006.jpg -> ADE_val_00000006
-            image_name = sample['fpath_img'][39:55]
-
-            # Only append the image if it contains a wall in it
-            if self.SCENE_DICT[image_name] in self.SCENES_LIST:
-                val_images.append(os.path.join("data", sample['fpath_img']))
-                val_masks.append(os.path.join("data", sample['fpath_segm']))
-                self.val_length += 1
+        self.load_samples_with_walls(train_images, train_masks, "TRAINING")
+        self.load_samples_with_walls(val_images, val_masks, "VALIDATION") 
 
         return train_images, train_masks, val_images, val_masks
     
