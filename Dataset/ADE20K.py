@@ -12,7 +12,12 @@ import json
 import progressbar
 from urllib.request import urlretrieve
 from zipfile import ZipFile
-import constants
+from constants import (
+    DATA_FOLDER_NAME,
+    TRAINING_ODGT_PATH,
+    VALIDATION_ODGT_PATH,
+    SCENE_CATEGORIES_PATH
+)
 
 pbar = None
 
@@ -22,9 +27,9 @@ class ADE20K:
     Downloads the dataset and creates the necessary files for this dataset.
     """
     def __init__(self):
-        self.DATA_FOLDER_NAME = constants.DATA_FOLDER_NAME
-        self.TRAINING_ODGT_PATH = constants.TRAINING_ODGT_PATH
-        self.VALIDATION_ODGT_PATH = constants.VALIDATION_ODGT_PATH
+        self.DATA_FOLDER_NAME = DATA_FOLDER_NAME
+        self.TRAINING_ODGT_PATH = TRAINING_ODGT_PATH
+        self.VALIDATION_ODGT_PATH = VALIDATION_ODGT_PATH
 
         # Create the data folder, download the ADE20K dataset and download the ODGT files
         self.create_folders()
@@ -32,29 +37,7 @@ class ADE20K:
         self.train_samples = [json.loads(x.rstrip()) for x in open(self.TRAINING_ODGT_PATH, 'r')]
         self.val_samples = [json.loads(x.rstrip()) for x in open(self.VALIDATION_ODGT_PATH, 'r')]
 
-        self.SCENE_CATEGORIES_PATH = constants.SCENE_CATEGORIES_PATH
-        self.SCENE_DICT = self.build_scene_dict()
-
-    def build_scene_dict(self):
-        """
-        Example of the return dictionary {Image-name, Scene-on-the-image}:
-        {'ADE_train_00000001': airport_terminal,
-         'ADE_train_00000051': bathroom, ...}
-        """
-        if os.path.isfile(self.SCENE_CATEGORIES_PATH):
-            scene_dict = {}
-
-            with open(self.SCENE_CATEGORIES_PATH, 'r') as scene_file:
-                for line in scene_file:
-                    img_name, scene_name = line.split(' ')
-                    # scene_name = 'airport_terminal\n' -> scene_name[:-1] = 'airport_terminal'
-                    scene_name = scene_name[:-1]
-                    scene_dict[img_name] = scene_name
-
-            return scene_dict
-            
-        raise FileNotFoundError(
-            "sceneCategories.txt file does not exist. Make sure you first execute Dataset.create_folders()")
+        self.SCENE_CATEGORIES_PATH = SCENE_CATEGORIES_PATH
 
     ##########################################################    
     ######################## DOWNLOADS #######################

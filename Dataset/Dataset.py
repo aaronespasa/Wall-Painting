@@ -13,18 +13,45 @@ from PIL import Image
 import cv2
 from torch.utils.data import Dataset
 import numpy as np
-import constants
+from constants import (
+    DATA_FOLDER_NAME,
+    SCENE_CATEGORIES_PATH,
+    SCENES_LIST,
+    TRAINING_ODGT_PATH,
+    VALIDATION_ODGT_PATH,
+)
 
 class WallDataset(Dataset):
     def __init__(self, transform=None):
         self.transform = transform
-        self.train_samples = [json.loads(x.rstrip()) for x in open(constants.TRAINING_ODGT_PATH, 'r')]
-        self.val_samples = [json.loads(x.rstrip()) for x in open(constants.VALIDATION_ODGT_PATH, 'r')]
+        self.train_samples = [json.loads(x.rstrip()) for x in open(TRAINING_ODGT_PATH, 'r')]
+        self.val_samples = [json.loads(x.rstrip()) for x in open(VALIDATION_ODGT_PATH, 'r')]
 
+        self.SCENE_DICT = self.build_scene_dict()
         (self.train_images, self.train_masks, self.val_images, self.val_masks) = self.load_data()
 
         self.train_length = 0
         self.val_length = 0
+
+    def build_scene_dict(self):
+        """
+        Example of the return dictionary {Image-name, Scene-on-the-image}:
+        {'ADE_train_00000001': airport_terminal,
+            'ADE_train_00000051': bathroom, ...}
+        """
+        if os.path.isfile(SCENE_CATEGORIES_PATH):
+            scene_dict = {}
+
+            with open(SCENE_CATEGORIES_PATH, 'r') as scene_file:
+                for line in scene_file:
+                    img_name, scene_name = line.split(' ')
+                    scene_name = scene_name[:-1] # remove the '\n' of 'scene_name\n'
+                    scene_dict[img_name] = scene_name
+
+            return scene_dict
+            
+        raise FileNotFoundError(
+            "sceneCategories.txt file does not exist. Make sure you first execute Dataset.create_folders()")
 
     def load_samples_with_walls(self, images:list, masks:list, purpose:str):
         """Loads on the images & masks lists all those samples containing walls.
@@ -39,9 +66,9 @@ class WallDataset(Dataset):
             image_name = sample["fpath_img"].split("/")[-1][:-4]
 
             # Only append the image if it contains a wall on it
-            if self.SCENE_DICT[image_name] in self.SCENES_LIST:
-                images.append(os.path.join(constants.DATA_FOLDER_NAME, sample['fpath_img']))
-                masks.append(os.path.join(constants.DATA_FOLDER_NAME, sample["fpath_segm"]))
+            if self.SCENE_DICT[image_name] in SCENES_LIST:
+                images.append(os.path.join(DATA_FOLDER_NAME, sample['fpath_img']))
+                masks.append(os.path.join(DATA_FOLDER_NAME, sample["fpath_segm"]))
                 length += 1
 
         if purpose == "TRAINING":
@@ -61,8 +88,10 @@ class WallDataset(Dataset):
 
         return train_images, train_masks, val_images, val_masks
     
+
     def __len__(self):
         return self.train_length + self.val_length
+
 
     def read_image(self, img_path: str):
         """Resizes and normalizes an image located at img_path"""
@@ -90,6 +119,7 @@ class WallDataset(Dataset):
         x = x.astype(np.float32)
         return x
     
+
     def preprocess(self, x:str, y:str):
         """Preprocess the input image and mask"""
         def f(x, y):
@@ -105,7 +135,6 @@ class WallDataset(Dataset):
             y = y.long()
 
             return x, y
-
         
         image, mask = map(f, [x, y])
         image.reshape([self.SHAPE[0], self.SHAPE[1], 3])
@@ -113,6 +142,7 @@ class WallDataset(Dataset):
 
         return image, mask
     
+
     def __getitem__(self, idx):
         img_path = self.train_images[idx] if idx < self.val_length else self.val_images[idx]
         mask_path = self.train_masks[idx] if idx < self.val_length else self.val_masks[idx]
@@ -124,11 +154,3 @@ class WallDataset(Dataset):
             image, mask = augmentations["img"], augmentations["mask"]
 
         return image, mask
-
-if __name__ == '__main__':
-    wall_dataset = WallDataset()
-
-    for i in range(3):
-        image, mask = wall_dataset[i]
-        print(f"Image shape: {image.shape}",
-              f"Mask shape: {mask.shape}")
