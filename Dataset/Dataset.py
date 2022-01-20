@@ -117,10 +117,18 @@ class WallDataset(Dataset):
         img_path = self.train_images[idx] if idx < self.val_length else self.val_images[idx]
         mask_path = self.train_masks[idx] if idx < self.val_length else self.val_masks[idx]
 
-        image, mask = self.preproces(img_path, mask_path)
+        image, mask = self.preprocess(img_path, mask_path)
 
         if self.transform is not None:
             augmentations = self.transform(img=image, mask=mask)
             image, mask = augmentations["img"], augmentations["mask"]
 
         return image, mask
+
+if __name__ == '__main__':
+    wall_dataset = WallDataset()
+
+    for i in range(3):
+        image, mask = wall_dataset[i]
+        print(f"Image shape: {image.shape}",
+              f"Mask shape: {mask.shape}")
