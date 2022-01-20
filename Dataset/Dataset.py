@@ -136,13 +136,13 @@ class WallDataset(Dataset):
 
             return x, y
         
-        image, mask = map(f, [x, y])
+        image, mask = map(f, x, y)
         image.reshape([self.SHAPE[0], self.SHAPE[1], 3])
         mask.reshape([self.SHAPE[0], self.SHAPE[1], 1])
 
         return image, mask
     
-
+    
     def __getitem__(self, idx):
         img_path = self.train_images[idx] if idx < self.val_length else self.val_images[idx]
         mask_path = self.train_masks[idx] if idx < self.val_length else self.val_masks[idx]
