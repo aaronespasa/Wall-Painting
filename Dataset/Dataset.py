@@ -22,11 +22,12 @@ from constants import (
 )
 
 class WallDataset(Dataset):
-    def __init__(self, transform=None):
+    def __init__(self, image_shape:tuple=(128, 128), transform=None):
         self.transform = transform
         self.train_samples = [json.loads(x.rstrip()) for x in open(TRAINING_ODGT_PATH, 'r')]
         self.val_samples = [json.loads(x.rstrip()) for x in open(VALIDATION_ODGT_PATH, 'r')]
 
+        self.SHAPE = image_shape
         self.SCENE_DICT = self.build_scene_dict()
         (self.train_images, self.train_masks, self.val_images, self.val_masks) = self.load_data()
 
@@ -122,21 +123,13 @@ class WallDataset(Dataset):
 
     def preprocess(self, x:str, y:str):
         """Preprocess the input image and mask"""
-        def f(x, y):
-            # Paths have the following format b"path". We want to convert them
-            # so they have the normal string format "".
-            x = x.decode()
-            y = y.decode()
-
+        def read_image_and_mask(x, y):
             x = self.read_image(x)
             y = self.read_mask(y)
 
-            x = x.long()
-            y = y.long()
-
             return x, y
         
-        image, mask = map(f, x, y)
+        image, mask = read_image_and_mask(x, y)
         image.reshape([self.SHAPE[0], self.SHAPE[1], 3])
         mask.reshape([self.SHAPE[0], self.SHAPE[1], 1])
 
