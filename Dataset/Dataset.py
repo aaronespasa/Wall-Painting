@@ -9,7 +9,6 @@ https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE
 """
 import os
 import json
-from PIL import Image
 import cv2
 from torch.utils.data import Dataset
 import numpy as np
@@ -24,11 +23,19 @@ from constants import (
 class WallDataset(Dataset):
     def __init__(self, image_shape:tuple=(128, 128), transform=None):
         self.transform = transform
-        self.train_samples = [json.loads(x.rstrip()) for x in open(TRAINING_ODGT_PATH, 'r')]
-        self.val_samples = [json.loads(x.rstrip()) for x in open(VALIDATION_ODGT_PATH, 'r')]
 
-        self.SHAPE = image_shape
+        self.ABSOLUTE_PATH = os.path.dirname(__file__)
+
+        self.TRAINING_ODGT_PATH = os.path.join(self.ABSOLUTE_PATH, TRAINING_ODGT_PATH)
+        self.VALIDATION_ODGT_PATH = os.path.join(self.ABSOLUTE_PATH, VALIDATION_ODGT_PATH)
+        self.train_samples = [json.loads(x.rstrip()) for x in open(self.TRAINING_ODGT_PATH, 'r')]
+        self.val_samples = [json.loads(x.rstrip()) for x in open(self.VALIDATION_ODGT_PATH, 'r')]
+
+        self.SCENE_CATEGORIES_PATH = os.path.join(self.ABSOLUTE_PATH, SCENE_CATEGORIES_PATH)
         self.SCENE_DICT = self.build_scene_dict()
+        
+        self.SHAPE = image_shape
+        self.DATA_FOLDER_NAME = os.path.join(self.ABSOLUTE_PATH, DATA_FOLDER_NAME)
         (self.train_images, self.train_masks, self.val_images, self.val_masks) = self.load_data()
 
         self.train_length = 0
@@ -40,10 +47,10 @@ class WallDataset(Dataset):
         {'ADE_train_00000001': airport_terminal,
             'ADE_train_00000051': bathroom, ...}
         """
-        if os.path.isfile(SCENE_CATEGORIES_PATH):
+        if os.path.isfile(self.SCENE_CATEGORIES_PATH):
             scene_dict = {}
 
-            with open(SCENE_CATEGORIES_PATH, 'r') as scene_file:
+            with open(self.SCENE_CATEGORIES_PATH, 'r') as scene_file:
                 for line in scene_file:
                     img_name, scene_name = line.split(' ')
                     scene_name = scene_name[:-1] # remove the '\n' of 'scene_name\n'
@@ -52,7 +59,7 @@ class WallDataset(Dataset):
             return scene_dict
             
         raise FileNotFoundError(
-            "sceneCategories.txt file does not exist. Make sure you first execute Dataset.create_folders()")
+            "sceneCategories.txt file does not exist. Make sure you first execute ADE20K.create_folders()")
 
     def load_samples_with_walls(self, images:list, masks:list, purpose:str):
         """Loads on the images & masks lists all those samples containing walls.
@@ -68,8 +75,8 @@ class WallDataset(Dataset):
 
             # Only append the image if it contains a wall on it
             if self.SCENE_DICT[image_name] in SCENES_LIST:
-                images.append(os.path.join(DATA_FOLDER_NAME, sample['fpath_img']))
-                masks.append(os.path.join(DATA_FOLDER_NAME, sample["fpath_segm"]))
+                images.append(os.path.join(self.DATA_FOLDER_NAME, sample['fpath_img']))
+                masks.append(os.path.join(self.DATA_FOLDER_NAME, sample["fpath_segm"]))
                 length += 1
 
         if purpose == "TRAINING":
