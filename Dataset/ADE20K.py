@@ -27,17 +27,19 @@ class ADE20K:
     Downloads the dataset and creates the necessary files for this dataset.
     """
     def __init__(self):
-        self.DATA_FOLDER_NAME = DATA_FOLDER_NAME
-        self.TRAINING_ODGT_PATH = TRAINING_ODGT_PATH
-        self.VALIDATION_ODGT_PATH = VALIDATION_ODGT_PATH
+        self.ABSOLUTE_PATH = os.path.dirname(__file__)
+
+        self.DATA_FOLDER_NAME = os.path.join(self.ABSOLUTE_PATH, DATA_FOLDER_NAME)
+        self.TRAINING_ODGT_PATH = os.path.join(self.ABSOLUTE_PATH, TRAINING_ODGT_PATH)
+        self.VALIDATION_ODGT_PATH = os.path.join(self.ABSOLUTE_PATH, VALIDATION_ODGT_PATH)
 
         # Create the data folder, download the ADE20K dataset and download the ODGT files
         self.create_folders()
 
         self.train_samples = [json.loads(x.rstrip()) for x in open(self.TRAINING_ODGT_PATH, 'r')]
         self.val_samples = [json.loads(x.rstrip()) for x in open(self.VALIDATION_ODGT_PATH, 'r')]
-
-        self.SCENE_CATEGORIES_PATH = SCENE_CATEGORIES_PATH
+        
+        self.SCENE_CATEGORIES_PATH = os.path.join(self.ABSOLUTE_PATH, SCENE_CATEGORIES_PATH)
 
     ##########################################################    
     ######################## DOWNLOADS #######################
