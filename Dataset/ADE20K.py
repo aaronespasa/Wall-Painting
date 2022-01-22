@@ -19,12 +19,11 @@ spec = importlib.util.spec_from_file_location('constants', CONSTANTS_PATH)
 constants = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(constants)
 
-from constants import (
-    DATA_FOLDER_NAME,
-    TRAINING_ODGT_PATH,
-    VALIDATION_ODGT_PATH,
-    SCENE_CATEGORIES_PATH
-)
+DATA_FOLDER_NAME = constants.DATA_FOLDER_NAME
+SCENE_CATEGORIES_PATH = constants.SCENE_CATEGORIES_PATH
+SCENES_LIST = constants.SCENES_LIST
+TRAINING_ODGT_PATH = constants.TRAINING_ODGT_PATH
+VALIDATION_ODGT_PATH = constants.VALIDATION_ODGT_PATH
 
 pbar = None
 

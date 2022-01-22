@@ -19,13 +19,11 @@ spec = importlib.util.spec_from_file_location('constants', CONSTANTS_PATH)
 constants = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(constants)
 
-from constants import (
-        DATA_FOLDER_NAME,
-        SCENE_CATEGORIES_PATH,
-        SCENES_LIST,
-        TRAINING_ODGT_PATH,
-        VALIDATION_ODGT_PATH,
-)
+DATA_FOLDER_NAME = constants.DATA_FOLDER_NAME
+SCENE_CATEGORIES_PATH = constants.SCENE_CATEGORIES_PATH
+SCENES_LIST = constants.SCENES_LIST
+TRAINING_ODGT_PATH = constants.TRAINING_ODGT_PATH
+VALIDATION_ODGT_PATH = constants.VALIDATION_ODGT_PATH
 
 class WallDataset(Dataset):
     def __init__(self, image_shape:tuple=(128, 128), transform=None):
