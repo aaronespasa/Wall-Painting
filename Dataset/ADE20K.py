@@ -12,6 +12,13 @@ import json
 import progressbar
 from urllib.request import urlretrieve
 from zipfile import ZipFile
+
+import importlib.util
+CONSTANTS_PATH = os.path.join(os.path.dirname(__file__), 'constants.py')
+spec = importlib.util.spec_from_file_location('constants', CONSTANTS_PATH)
+constants = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(constants)
+
 from constants import (
     DATA_FOLDER_NAME,
     TRAINING_ODGT_PATH,

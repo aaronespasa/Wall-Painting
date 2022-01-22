@@ -10,14 +10,21 @@ https://github.com/aaronespasa/Wall-Painting/blob/main/LICENSE
 import os
 import json
 import cv2
-from torch.utils.data import Dataset
 import numpy as np
+from torch.utils.data import Dataset
+
+import importlib.util
+CONSTANTS_PATH = os.path.join(os.path.dirname(__file__), 'constants.py')
+spec = importlib.util.spec_from_file_location('constants', CONSTANTS_PATH)
+constants = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(constants)
+
 from constants import (
-    DATA_FOLDER_NAME,
-    SCENE_CATEGORIES_PATH,
-    SCENES_LIST,
-    TRAINING_ODGT_PATH,
-    VALIDATION_ODGT_PATH,
+        DATA_FOLDER_NAME,
+        SCENE_CATEGORIES_PATH,
+        SCENES_LIST,
+        TRAINING_ODGT_PATH,
+        VALIDATION_ODGT_PATH,
 )
 
 class WallDataset(Dataset):
